@@ -28,6 +28,7 @@ public class OACache implements IOACache {
     public void saveList(String key , String processId) {
         redisTemplate.boundListOps(key)
                 .leftPush(processId);
+        System.out.println("nishiyigeguapi");
 
     }
 
