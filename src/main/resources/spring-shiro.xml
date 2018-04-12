@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!--初始化shiro-->
+    <!--处理shiro拦截的过滤器-->
+    <!--注意：id的名称必须和web.xml中的filter-name一样。因为DelegatingFilterProxy过滤器代理是通过filter-name来映射的spring里面的shiroFilter 类-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!--配置系统的登录界面-->
+        <property name="loginUrl" value="/login.jsp"/>
+        <!--角色或者权限认证失败的页面-->
+        <property name="unauthorizedUrl" value="unauthorized.jsp"/>
+        <property name="filterChainDefinitions">
+            <value>
+                <!--拦截规则-->
+
+                /login.jsp=anon
+                /user/login=anon
+                /js/**=anon
+                /css/**=anon <!--authc需要登录之后才能访问，user需要登录或者获取rememberme的缓存信息也能进入系统-->
+                /**=user
+            </value>
+        </property>
+    </bean>
+
+    <!--cookie配置参数-->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/> <!--避免XSS攻击-->
+        <property name="maxAge" value="10"/><!-- 失效时间 -->
+    </bean>
+
+    <!--用cookie保存用户登录状态的帮助类-->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+    <bean id="hibernateRealm" class="com.qianfeng.oa.shiro.UserRealm"/>
+    <!--Security Manager交给spring管理-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realms" ref="hibernateRealm"/>
+    </bean>
+
+
+</beans>

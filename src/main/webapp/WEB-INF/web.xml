@@ -1,0 +1,66 @@
+<!DOCTYPE web-app PUBLIC
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+<display-name>Archetype Created Web Application</display-name>
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring-core.xml</param-value>
+  </context-param>
+
+  <!--session共享的过滤器-->
+  <filter>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>springSessionRepositoryFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- The filter-name matches name of a 'shiroFilter' bean inside applicationContext.xml -->
+  <!--shiro的过滤器-->
+  <filter>
+    <filter-name>shiroFilter</filter-name>
+    <!--DelegatingFilterProxy代理过滤器，用来将web容器的过滤器委派给spring处理-->
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <init-param>
+      <!--在过滤器的整个生命周期类代理模式都有效-->
+      <param-name>targetFilterLifecycle</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <!-- Make sure any request you want accessible to Shiro is filtered. /* catches all -->
+  <!-- requests.  Usually this filter mapping is defined first (before all others) to -->
+  <!-- ensure that Shiro works in subsequent filters in the filter chain:             -->
+  <filter-mapping>
+    <filter-name>shiroFilter</filter-name>
+    <!--拦截所有请求-->
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value></param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+
+  </servlet>
+
+
+
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+
+
+</web-app>

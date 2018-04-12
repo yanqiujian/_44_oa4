@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.oa.dto.RolePermissionMapper">
+
+
+
+
+    <select id="queryRole" resultType="java.lang.String">
+
+            select r.roler_name from tb_user u
+            join tb_roler r
+            on u.fk_user_roler_id = r.roler_id
+            and u.user_name = #{name}
+    </select>
+
+    <select id="queryPermission" resultType="java.lang.String">
+
+        select p.permission_name from tb_roler r
+            join tb_roler_permission rp
+            join tb_permission p
+            on r.roler_id = rp.fk_roler_id
+            and p.permission_id = rp.fk_permission_id
+            and r.roler_name=#{rolename};
+
+    </select>
+
+</mapper>
